@@ -6,4 +6,6 @@ import com.paytel.task.model.dto.NewLogDataDto;
 public interface LogDataService {
 
     LogDataDto addNewLogEntry(NewLogDataDto logDataDto);
+
+    LogDataDto getOne(Long id);
 }

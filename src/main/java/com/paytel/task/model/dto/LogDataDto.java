@@ -1,18 +1,21 @@
 package com.paytel.task.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
-@Data
+@XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
-public class LogDataDto {
+@Getter
+@Setter
+public class LogDataDto extends RepresentationModel<LogDataDto>{
 
-    @JsonIgnore
     private Long id;
     private String sourceAppName;
     private Date logDate;

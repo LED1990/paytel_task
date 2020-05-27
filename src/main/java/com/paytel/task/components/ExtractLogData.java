@@ -45,7 +45,11 @@ public class ExtractLogData {
         for (String dateRgx : timeRgx
                 ) {
             pattern = Pattern.compile(dateRgx);
-            matcher = pattern.matcher(logMessage.substring(0, 24)); //assume that date will be first
+            if (logMessage.length() > 24){
+                matcher = pattern.matcher(logMessage.substring(0, 24)); //assume that date will be first
+            }else {
+                matcher = pattern.matcher(logMessage); //assume that date will be first
+            }
             if (matcher.find()) {
                 result.put(DATE_KEY, matcher.group("timestamp"));
                 break;

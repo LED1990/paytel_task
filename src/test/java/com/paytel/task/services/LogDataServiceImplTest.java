@@ -1,6 +1,7 @@
 package com.paytel.task.services;
 
 import com.paytel.task.components.ExtractLogData;
+import com.paytel.task.exceptions.LogNotFoundException;
 import com.paytel.task.model.LogData;
 import com.paytel.task.model.dto.LogDataDto;
 import com.paytel.task.model.dto.NewLogDataDto;
@@ -13,9 +14,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LogDataServiceImplTest {
@@ -68,5 +70,18 @@ class LogDataServiceImplTest {
         //then
         assertTrue(exception.getMessage().equals("Illegal argument, no log message present"));
     }
+
+    @Test
+    void testGetOneShouldThrowException() {
+        //given
+        Long id = 1L;
+        //when
+        when(logDataRepository.findById(id)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(LogNotFoundException.class, () -> logDataService.getOne(id));
+
+        //then
+        assertTrue(exception.getMessage().equals("Log not found id: " + id));
+    }
+
 
 }

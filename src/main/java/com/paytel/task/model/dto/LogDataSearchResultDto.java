@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement
-
 @Getter
 @Setter
 @AllArgsConstructor

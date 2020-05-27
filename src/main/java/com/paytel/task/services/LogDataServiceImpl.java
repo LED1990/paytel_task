@@ -1,6 +1,7 @@
 package com.paytel.task.services;
 
 import com.paytel.task.components.ExtractLogData;
+import com.paytel.task.exceptions.LogNotFoundException;
 import com.paytel.task.mappers.LogDataMapper;
 import com.paytel.task.model.LogData;
 import com.paytel.task.model.dto.LogDataDto;
@@ -53,6 +54,10 @@ public class LogDataServiceImpl implements LogDataService {
         logDataRepository.save(newData);
 
         return mapper.logDataToDto(newData);
+    }
 
+    @Override
+    public LogDataDto getOne(Long id) {
+        return logDataRepository.findById(id).map(logData -> mapper.logDataToDto(logData)).orElseThrow(() -> new LogNotFoundException(id));
     }
 }
