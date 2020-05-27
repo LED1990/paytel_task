@@ -1,6 +1,9 @@
 package com.paytel.task.model.dto;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -9,6 +12,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class LogDataDto {
 
+    @JsonIgnore
+    private Long id;
     private String sourceAppName;
     private Date logDate;
     private String logLevel;
