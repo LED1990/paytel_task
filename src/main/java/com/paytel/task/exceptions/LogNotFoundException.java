@@ -8,7 +8,7 @@ public class LogNotFoundException extends RuntimeException {
         super("Log not found id: " + id);
     }
 
-    public LogNotFoundException() {
-        super("Not found");
+    public LogNotFoundException(String message) {
+        super(message);
     }
 }
