@@ -2,9 +2,13 @@ package com.paytel.task.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paytel.task.model.dto.LogDataDto;
+import com.paytel.task.model.dto.LogDataSearchResultDto;
 import com.paytel.task.model.dto.NewLogDataDto;
+import com.paytel.task.services.interfaces.LogDataSearchService;
 import com.paytel.task.services.interfaces.LogDataService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,14 +38,22 @@ class LogDataControllerTest {
     @MockBean
     private LogDataService logDataService;
 
+    @MockBean
+    private LogDataSearchService logDataSearchService;
+
     private ObjectMapper mapper = new ObjectMapper();
 
-    @Test
-    void testAddNewLogShouldReturnJson() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE,
+    })
+    void testAddNewLogShouldReturnContent(String content) throws Exception {
         //when
         when(logDataService.addNewLogEntry(any())).thenReturn(new LogDataDto());
 
         MvcResult result = mockMvc.perform(post(URI)
+                .accept(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(new NewLogDataDto())))
                 .andExpect(status().isCreated())
@@ -47,23 +61,7 @@ class LogDataControllerTest {
 
         //then
         assertTrue(result.getResponse().getContentType() != null);
-        assertTrue(result.getResponse().getContentType().equals(MediaType.APPLICATION_JSON_VALUE));
-    }
-
-    @Test
-    void testAddNewLogShouldReturnXml() throws Exception {
-        //when
-        when(logDataService.addNewLogEntry(any())).thenReturn(new LogDataDto());
-
-        MvcResult result = mockMvc.perform(post(URI)
-                .accept(MediaType.APPLICATION_XML)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new NewLogDataDto())))
-                .andExpect(status().isCreated())
-                .andReturn();
-        //then
-        assertTrue(result.getResponse().getContentType() != null);
-        assertTrue(result.getResponse().getContentType().equals(MediaType.APPLICATION_XML_VALUE));
+        assertTrue(result.getResponse().getContentType().equals(content));
     }
 
     @Test
@@ -76,4 +74,26 @@ class LogDataControllerTest {
                 .andReturn();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE,
+    })
+    void testSearchLogsShouldReturnContent(String content) throws Exception {
+        //given
+        LogDataSearchResultDto logDataSearchResultDto = new LogDataSearchResultDto();
+        logDataSearchResultDto.setLogs(new ArrayList<>());
+
+        //when
+        when(logDataSearchService.getLogsByCriteria(any())).thenReturn(logDataSearchResultDto);
+
+        MvcResult result = mockMvc.perform(get(URI)
+                .accept(content))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        assertTrue(result.getResponse().getContentType() != null);
+        assertTrue(result.getResponse().getContentType().equals(content));
+    }
 }

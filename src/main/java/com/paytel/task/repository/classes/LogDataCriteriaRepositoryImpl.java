@@ -36,7 +36,7 @@ public class LogDataCriteriaRepositoryImpl implements LogDataCriteriaRepository 
 
         Predicate finalPredicate;
         if (predicates.size() != 0) {
-            finalPredicate = criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
+            finalPredicate = criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
             criteriaQuery.select(root).where(finalPredicate).distinct(true);
         } else {
             criteriaQuery.select(root).distinct(true);
